@@ -59,4 +59,3 @@ ggplot(temp_data, aes(x=Date, y=temp_C, color=site_no)) +
 
 
 ```
-
