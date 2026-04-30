@@ -1,5 +1,5 @@
 ---
-title: "Assignment 2: Git and Stream Temperature"
+title: "Assignment 2: Git and Stream Temperature - Data Download"
 author: "Grace Bryan"
 date: "May 07, 2026"
 format: pdf
