@@ -29,33 +29,52 @@ temp_data <- read_waterdata_daily(
 
 ```{r}
 library(lubridate)
-library(dplyr)
-library(ggplot2)
+library(tidyverse)
 
-# 1. Select only the first 4 essential columns to match your colnames() assignment
-# monitoring_location_id, parameter_code, statistic_id, time, value...
 temp_data <- temp_data %>%
-  select(agency_cd = monitoring_location_id, 
-         site_no = parameter_code, # Placeholder to match your 4-column requirement
-         Date = time, 
-         temp_C = value)
+  select(
+    agency_cd = monitoring_location_id,
+    site_no = monitoring_location_id,
+    Date = time,
+    temp_C = value
+  )
 
-# 2. Now your specific code chunk will run without error
-colnames(temp_data) <- c("agency_cd", "site_no", "Date", "temp_C")
+# Clean site names
+temp_data$site_no <- gsub("USGS-", "", temp_data$site_no)
 
-# Ensure Date is actually a Date object for the lubridate functions
+# Ensure Date is Date format
 temp_data$Date <- as.Date(temp_data$Date)
 
 # Extract date info
-temp_data$month = month(temp_data$Date, label=TRUE)
-temp_data$year = year(temp_data$Date)
+temp_data$month <- month(temp_data$Date, label = TRUE)
+temp_data$year <- year(temp_data$Date)
 
-# Check by plotting
-ggplot(temp_data, aes(x=Date, y=temp_C, color=site_no)) +
+# Plot
+ggplot(temp_data, aes(x = Date, y = temp_C, color = site_no)) +
   geom_line() +
-  labs(title="Stream Temperature at Willamette River Sites",
-       x="Date", y="Temperature (°C)", color="Site Number") +
+  labs(title = "Stream Temperature at Willamette River Sites",
+       x = "Date", y = "Temperature (°C)", color = "Site Number") +
   theme_minimal()
 
-
 ```
+```{r}
+download_data <- TRUE
+
+if(download_data){
+  temp_data <- read_waterdata_daily(
+    monitoring_location_id = siteNumbers,
+    parameter_code = "00010",
+    statistic_id = "00003",
+    time = c("2010-01-01", "2023-12-31"),
+    skipGeometry = TRUE
+  )
+  
+  # cleaning steps here...
+  
+  write.csv(temp_data, "data/temp_data.csv", row.names = FALSE)
+  
+} else {
+  temp_data <- read.csv("data/temp_data.csv")
+}
+```
+
