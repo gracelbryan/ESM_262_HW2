@@ -4,77 +4,98 @@ author: "Grace Bryan"
 date: "May 07, 2026"
 format: pdf
 editor: visual
-  markdown: 
-    wrap: 72
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
 ```
 
-```{r}
-library(dataRetrieval)
+### **Data Source**
 
-# Note the "USGS-" prefix added to each ID
+Daily stream temperature data were downloaded from the USGS NWIS database for three sites on the Willamette River from 2010-2023.
+
+#### **Data Download or Load**
+
+```{r}
+
+library(dataRetrieval)
+library(tidyverse)
+library(lubridate)
+
+# Site IDs (USGS format required for API)
 siteNumbers <- c("USGS-14211720", "USGS-14211010", "USGS-14166000")
 
-temp_data <- read_waterdata_daily(
-  monitoring_location_id = siteNumbers,
-  parameter_code = "00010",           # Water temperature
-  statistic_id = "00003",             # Mean daily value
-  time = c("2010-01-01", "2023-12-31"),
-  skipGeometry = TRUE                 # Standard practice unless you need map coordinates
-)
-```
+# Toggle: TRUE = downlad fresh data, FALSE = load saved data
 
-```{r}
-library(lubridate)
-library(tidyverse)
-
-temp_data <- temp_data %>%
-  select(
-    agency_cd = monitoring_location_id,
-    site_no = monitoring_location_id,
-    Date = time,
-    temp_C = value
-  )
-
-# Clean site names
-temp_data$site_no <- gsub("USGS-", "", temp_data$site_no)
-
-# Ensure Date is Date format
-temp_data$Date <- as.Date(temp_data$Date)
-
-# Extract date info
-temp_data$month <- month(temp_data$Date, label = TRUE)
-temp_data$year <- year(temp_data$Date)
-
-# Plot
-ggplot(temp_data, aes(x = Date, y = temp_C, color = site_no)) +
-  geom_line() +
-  labs(title = "Stream Temperature at Willamette River Sites",
-       x = "Date", y = "Temperature (°C)", color = "Site Number") +
-  theme_minimal()
-
-```
-```{r}
 download_data <- TRUE
 
 if(download_data){
+
   temp_data <- read_waterdata_daily(
     monitoring_location_id = siteNumbers,
-    parameter_code = "00010",
-    statistic_id = "00003",
+    parameter_code = "00010", # Water temp
+    statistic_id = "00003",   # Daily mean
     time = c("2010-01-01", "2023-12-31"),
     skipGeometry = TRUE
   )
-  
-  # cleaning steps here...
-  
-  write.csv(temp_data, "data/temp_data.csv", row.names = FALSE)
-  
+
+# Save data locally
+write.csv(temp_data, "data/temp_data.csv", row.names = FALSE)
+
 } else {
+
   temp_data <- read.csv("data/temp_data.csv")
 }
 ```
 
+### **Data Processing**
+
+The raw dataset was cleaned and reshaped for analysis. Relevant columns were selected, renamed, and time variables were created.
+
+```{r}
+
+# Select and rename relevant columns 
+temp_data <- temp_data %>% 
+  select(
+    agency_cd = monitoring_location_id, 
+    site_no = monitoring_location_id, 
+    Date = time, 
+    temp_C = value ) 
+
+# Clean site names
+temp_data$site_no <- gsub("USGS-", "", temp_data$site_no) 
+
+# Ensure Date format 
+temp_data$Date <- as.Date(temp_data$Date) 
+
+# Extract time variables 
+temp_data$month <- month(temp_data$Date, label = TRUE)
+temp_data$year <- year(temp_data$Date)
+
+```
+
+### **Visualization**
+
+The plot below shows temperature variation over time for each monitoring site.
+
+```{r}
+# Plot
+ggplot(temp_data, aes(x = Date, y = temp_C, color = site_no)) + 
+  geom_line() + 
+  labs( 
+    title = "Stream Temperature at Willamette River Sites", 
+    x = "Date", 
+    y = "Temperature (°C)", 
+    color = "Site Number" ) + 
+  theme_minimal()
+```
+
+```{r}
+temp_data %>%
+  group_by(site_no) %>%
+  summarise(
+    mean_temp = mean(temp_C, na.rm = TRUE),
+    max_temp = max(temp_C, na.rm = TRUE),
+    min_temp = min(temp_C, na.rm = TRUE)
+  )
+```
