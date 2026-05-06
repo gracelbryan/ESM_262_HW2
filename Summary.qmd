@@ -1,0 +1,8 @@
+---
+title: "Assignment 2: Git and Stream Temperature"
+author: "Grace Bryan"
+date: "May 07, 2026"
+format: pdf
+editor: visual
+---
+
