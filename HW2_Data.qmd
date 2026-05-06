@@ -89,7 +89,9 @@ ggplot(temp_data, aes(x = Date, y = temp_C, color = site_no)) +
     color = "Site Number" ) + 
   theme_minimal()
 ```
+
 ### *Summary Statistics*
+
 ```{r}
 temp_data %>%
   group_by(site_no) %>%
