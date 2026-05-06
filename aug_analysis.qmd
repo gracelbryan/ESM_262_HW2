@@ -1,0 +1,79 @@
+---
+title: "Assignment 2: Git and Stream Temperature - July Analysis"
+author: "Grace Bryan"
+date: "May 07, 2026"
+format: pdf
+editor: visual
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+```
+
+###*Data Loading*
+
+```{r}
+library(tidyverse)
+library(lubridate)
+
+# Load saved data
+
+temp_data <- read.csv("data/temp_data.csv")
+
+# Select and rename relevant columns 
+temp_data <- temp_data %>% 
+  select(
+    agency_cd = monitoring_location_id, 
+    site_no = monitoring_location_id, 
+    Date = time, 
+    temp_C = value ) 
+
+# Clean site names
+temp_data$site_no <- gsub("USGS-", "", temp_data$site_no) 
+
+# Ensure proper format 
+temp_data$Date <- as.Date(temp_data$Date) 
+temp_data$month <- month(temp_data$Date, label = TRUE)
+temp_data$year <- year(temp_data$Date)
+
+```
+
+###*Filter for July*
+
+```{r}
+aug_data <- temp_data %>%
+  filter(month == "Aug")
+```
+
+###*Model: Temperature Trend Over Time*
+
+We use a generalized liner model (GLM) to estimate whether stream temperature is chaning over time and whether trends differ across sites.
+
+```{r}
+aug_model <- glm(temp_C ~ year * site_no,
+                  data = aug_data)
+
+summary(aug_model)
+```
+###*Visualization of Trends*
+
+```{r}
+ggplot(aug_data, aes(x = year, y = temp_C,
+                      color = site_no)) +
+  geom_point(alpha = 0.3) +
+  geom_smooth(method = "lm", se = FALSE) +
+  labs(
+    title = "August Temperature Trends by Site",
+    x = "Year",
+    y = "Temperature (˚C)" ) +
+  theme_minimal()
+```
+
+###*Interpretation of Results*
+
+August stream temperatures show a clear increasing trend over time. The coefficient for year is positive and highly significant (p < 0.001), indicating that temperatures are rising at a rate of approximately 0.13˚C per year at the baseline site (site 14166000).
+
+There are also differences in warming rates between sites. Site 14211010 shows a significantly greater increase in temperature over time compared to the baseline site, with an additional warming rate of about 0.046˚C per year. This suggests that this site is warming faster than the baseline.
+
+In contrast, site 14211720 does not show a statistically significant difference in warming rate compared to the baseline site. Therefore, there is no strong evidence that this site is warming at a different rate.
+
+Overall, the results indicate that August stream temperatures are increasing over time, with some variation in warming rates across sites.
