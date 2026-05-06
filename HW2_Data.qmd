@@ -14,7 +14,7 @@ knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
 
 Daily stream temperature data were downloaded from the USGS NWIS database for three sites on the Willamette River from 2010-2023.
 
-#### **Data Download or Load**
+### **Data Download or Load**
 
 ```{r}
 
@@ -25,7 +25,7 @@ library(lubridate)
 # Site IDs (USGS format required for API)
 siteNumbers <- c("USGS-14211720", "USGS-14211010", "USGS-14166000")
 
-# Toggle: TRUE = downlad fresh data, FALSE = load saved data
+# Toggle: TRUE = download fresh data, FALSE = load saved data
 
 download_data <- TRUE
 
@@ -50,7 +50,7 @@ write.csv(temp_data, "data/temp_data.csv", row.names = FALSE)
 
 ### **Data Processing**
 
-The raw dataset was cleaned and reshaped for analysis. Relevant columns were selected, renamed, and time variables were created.
+The raw dataset was cleaned and reshaped for analysis. Relevant columns were selected and renamed for clarity, and time variables (month and year) were extracted to support analysis.
 
 ```{r}
 
@@ -82,14 +82,14 @@ The plot below shows temperature variation over time for each monitoring site.
 # Plot
 ggplot(temp_data, aes(x = Date, y = temp_C, color = site_no)) + 
   geom_line() + 
-  labs( 
+  labs(  
     title = "Stream Temperature at Willamette River Sites", 
     x = "Date", 
     y = "Temperature (°C)", 
     color = "Site Number" ) + 
   theme_minimal()
 ```
-
+### *Summary Statistics*
 ```{r}
 temp_data %>%
   group_by(site_no) %>%
