@@ -65,11 +65,27 @@ Overall, warming trends were stronger in July than in August, suggesting that pe
 
 ### **August Temperature Trends**
 
-```{r}
+The figure below shows August stream temperature trends for each monitoring site.
 
+```{r}
+aug_data <- temp_data %>%
+  filter(month == "Aug")
+
+ggplot(aug_data, aes(x = year, y = temp_C, color = site_no)) +
+  geom_point(alpha = 0.3) +
+  geom_smooth(method = "lm", se = FALSE) +
+  labs(
+    title = "August Stream Temperature Trends by Site",
+    x = "Year",
+    y = "Temperature (°C)",
+    color = "Site Number"
+  ) +
+  theme_minimal()
 ```
 
 **August Interpretation**
+
+August temperatures also increased signigicantly over time, although warming rates were slightly lower than those observed in July. Site 14211010 again showed the strongest warming trend among the monitoring sites.
 
 ### **Comparison of July and August Trends**
 
