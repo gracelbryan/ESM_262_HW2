@@ -1,5 +1,5 @@
 ---
-title: "Assignment 2: Git and Stream Temperature - July Analysis"
+title: "Assignment 2: Git and Stream Temperature - August Analysis"
 author: "Grace Bryan"
 date: "May 07, 2026"
 format: pdf
@@ -38,7 +38,7 @@ temp_data$year <- year(temp_data$Date)
 
 ```
 
-### **Filter for July**
+### **Filter for August**
 
 ```{r}
 aug_data <- temp_data %>%
@@ -47,7 +47,7 @@ aug_data <- temp_data %>%
 
 ### **Model: Temperature Trend Over Time**
 
-We use a generalized liner model (GLM) to estimate whether stream temperature is chaning over time and whether trends differ across sites.
+We use a generalized liner model (GLM) to estimate whether stream temperature is changing over time and whether trends differ across sites.
 
 ```{r}
 aug_model <- glm(temp_C ~ year * site_no,
