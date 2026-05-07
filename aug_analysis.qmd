@@ -5,11 +5,12 @@ date: "May 07, 2026"
 format: pdf
 editor: visual
 ---
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
 ```
 
-###*Data Loading*
+### **Data Loading**
 
 ```{r}
 library(tidyverse)
@@ -37,14 +38,14 @@ temp_data$year <- year(temp_data$Date)
 
 ```
 
-###*Filter for July*
+### **Filter for July**
 
 ```{r}
 aug_data <- temp_data %>%
   filter(month == "Aug")
 ```
 
-###*Model: Temperature Trend Over Time*
+### **Model: Temperature Trend Over Time**
 
 We use a generalized liner model (GLM) to estimate whether stream temperature is chaning over time and whether trends differ across sites.
 
@@ -54,7 +55,8 @@ aug_model <- glm(temp_C ~ year * site_no,
 
 summary(aug_model)
 ```
-###*Visualization of Trends*
+
+\###*Visualization of Trends*
 
 ```{r}
 ggplot(aug_data, aes(x = year, y = temp_C,
@@ -68,9 +70,9 @@ ggplot(aug_data, aes(x = year, y = temp_C,
   theme_minimal()
 ```
 
-###*Interpretation of Results*
+### **Interpretation of Results**
 
-August stream temperatures show a clear increasing trend over time. The coefficient for year is positive and highly significant (p < 0.001), indicating that temperatures are rising at a rate of approximately 0.13˚C per year at the baseline site (site 14166000).
+August stream temperatures show a clear increasing trend over time. The coefficient for year is positive and highly significant (p \< 0.001), indicating that temperatures are rising at a rate of approximately 0.13˚C per year at the baseline site (site 14166000).
 
 There are also differences in warming rates between sites. Site 14211010 shows a significantly greater increase in temperature over time compared to the baseline site, with an additional warming rate of about 0.046˚C per year. This suggests that this site is warming faster than the baseline.
 
