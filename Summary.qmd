@@ -1,0 +1,80 @@
+---
+title: "Assignment 2: Git and Stream Temperature"
+author: "Grace Bryan"
+date: "May 07, 2026"
+format: pdf
+editor: visual
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+```
+
+### **Project Overview**
+
+This project analyzed long-term stream temperature trends at three monitoring sites on the Willamette River using USGS daily temperature data collected from 2010-2023.
+
+Trend analyses were conducted separately for July and August temperatures using generalized liner models (GLMs). The goal was to determine whether stream temperatures are changing over time and wheter warming trends differ across sites.
+
+### **Data Loading**
+
+```{r}
+library(tidyverse)
+library(lubridate)
+
+# Load data
+temp_data <- read.csv("data/temp_data.csv")
+
+# Format variables
+temp_data <- temp_data %>% 
+  select(
+    agency_cd = monitoring_location_id, 
+    site_no = monitoring_location_id, 
+    Date = time, 
+    temp_C = value ) 
+
+temp_data$site_no <- gsub("USGS-", "", temp_data$site_no) 
+
+temp_data$Date <- as.Date(temp_data$Date) 
+
+temp_data$month <- month(temp_data$Date, label = TRUE)
+temp_data$year <- year(temp_data$Date)
+```
+
+### **Key Findings**
+
+Both July and August temperatures showed significant warming trends over time.
+
+- July temperatures increased by approximately 0.15˚C per year at the baseline site.
+
+- August temperatures increased by approximately 0.13˚C per year at the baseline site.
+
+- Site 14211010 consistently showed stronger warming trends than the other sites.
+
+- Site 14211720 did not show significantly different warming trends from the baseline site.
+
+Overall, warming trends were stronger in July than in August, suggesting that peak summer temperatures may be increasing more rapidly.
+
+### **July Temperature Trends**
+
+```{r}
+
+```
+
+**July Interpretation**
+
+### **August Temperature Trends**
+
+```{r}
+
+```
+
+**August Interpretation**
+
+### **Comparison of July and August Trends**
+
+```{r}
+
+```
+
+### **Conclusion**
