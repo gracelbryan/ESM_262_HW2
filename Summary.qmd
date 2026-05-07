@@ -14,7 +14,7 @@ knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
 
 This project analyzed long-term stream temperature trends at three monitoring sites on the Willamette River using USGS daily temperature data collected from 2010-2023.
 
-Trend analyses were conducted separately for July and August temperatures using generalized liner models (GLMs). The goal was to determine whether stream temperatures are changing over time and wheter warming trends differ across sites.
+Trend analyses were conducted separately for July and August temperatures using generalized liner models (GLMs). The goal was to determine whether stream temperatures are changing over time and whether warming trends differ across sites.
 
 ### **Data Loading**
 
@@ -101,12 +101,53 @@ ggplot(aug_data, aes(x = year, y = temp_C, color = site_no)) +
 
 **August Interpretation**
 
-August temperatures also increased signigicantly over time, although warming rates were slightly lower than those observed in July. Site 14211010 again showed the strongest warming trend among the monitoring sites.
+August temperatures also increased significantly over time, although warming rates were slightly lower than those observed in July. Site 14211010 again showed the strongest warming trend among the monitoring sites.
 
 ### **Comparison of July and August Trends**
 
-```{r}
+The figure below compares average July and August temperatures across all monitoring sits over time.
 
+```{r}
+summary_data <- temp_data %>%
+  filter(month %in% c("Jul", "Aug")) %>%
+  group_by(year, month, site_no) %>%
+  summarise(
+    mean_temp = mean(temp_C, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+ggplot(summary_data,
+       aes(x = year,
+           y = mean_temp,
+           color = site_no,
+           linetype = month)) +
+
+  geom_line(size = 1) +
+
+  labs(
+    title = "Comparison of July and August Temperature Trends by Site",
+    x = "Year",
+    y = "Average Temperature (°C)",
+    color = "Site Number",
+    linetype = "Month"
+  ) +
+
+  scale_linetype_manual(
+    values = c(
+      "Jul" = "solid",
+      "Aug" = "dashed"
+    )
+  ) +
+
+  theme_minimal()
 ```
 
+**Comparison Interpretation** Both July and August temperatures increased over time across all three monitoring sites. July temperatures were consistently higher than August temperatures, and site 14211010 showed the strongest warming trend over the study period.
+
 ### **Conclusion**
+
+The analysis indicates the stream temperatures in the Willamette River have increased significantly between 2010 and 2023, particularly during the summer months.
+
+July exhibited the strongest warming trends, and one monitoring site (14211010) showed significantly faster warming than the others. Increasing stream temperatures may have important ecological implications, including increased thermal stress for aquatic organisms and reduced water quality during summer months.
+
+These results suggests that continuted monitoring of stream temperatures is important for understanding climate-related impacts on river ecosystems.
