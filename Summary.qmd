@@ -57,11 +57,27 @@ Overall, warming trends were stronger in July than in August, suggesting that pe
 
 ### **July Temperature Trends**
 
-```{r}
+The figure below shows July stream temperature trends for each monitoring site from 2010-2023.
 
+```{r}
+july_data <- temp_data %>%
+  filter(month == "Jul")
+
+ggplot(july_data, aes(x = year, y = temp_C, 
+                      color = site_no)) +
+  geom_point(alpha = 0.3) +
+  geom_smooth(method = "lm", se = FALSE) +
+  labs(
+    title = "July Stream Temperature Trends by Site",
+    x = "Year",
+    y = "Temperature (˚C)",
+  ) +
+  theme_minimal()
 ```
 
 **July Interpretation**
+
+July temperatures showed a strong positive warming trend over time at all monitoring sites. Site 14211010 exhibited the most rapid warming trend, while site 14211720 showed a smaller and non-significant difference from the baseline site.
 
 ### **August Temperature Trends**
 
